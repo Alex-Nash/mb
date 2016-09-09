@@ -19,12 +19,15 @@ int main()
 	  SetCosArray();
 	  struct Engine leftEngine;
 	  struct PwmGenerator pwmGen;
+		Encoder encoder;
 
 	  InitPwmGenerator(&pwmGen,  (u32)TMR0_1_BASE_ADDRESS,
 	                            (u32)TMR0_2_BASE_ADDRESS,
 	                            (u32)TMR0_3_BASE_ADDRESS);
 
-	  InitEngine(&leftEngine, &pwmGen, ENCODER0_DEVICE_ID, GPIO0_BASE_ADDRESS);
+		InitEncoder(&encoder, ENCODER0_DEVICE_ID);
+		
+	  InitEngine(&leftEngine, &pwmGen, &encoder, GPIO0_BASE_ADDRESS);
 
 	  StartForward(&leftEngine, 0x2FFF, 8);
     return 0;

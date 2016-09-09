@@ -35,9 +35,9 @@ void StartForward (struct Engine *engine, u16 power, u16 loop)
 }
 
 void InitEngine(struct Engine *engine, struct PwmGenerator *pwmGen,
-    u32 encoderDeviceID, u32 gpioBaseAddress)
+    Encoder *encoder, u32 gpioBaseAddress)
 {
-  InitEncoder(engine->encoder, encoderDeviceID);
-  //InitPwmGenerator(pwmGen);
   engine->gpioBaseAddress = gpioBaseAddress;
+  engine->PwmGenerator = pwmGen;
+  engine->encoder = encoder;
 }
