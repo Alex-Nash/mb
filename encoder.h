@@ -11,12 +11,6 @@
 #define ENCODER_ERR                 0xFFFF
 
 #define Encoder     XSpi
-/*struct Encoder
-{
-  u32 SpiDeviceID;  // SPI device ID in device tree
-  u32 BaseAddress;  // SPI base register number
-  XSpi*  SpiPtr;    // Pointer to SPI device
-}; */
 
 u16 GetElectricalAngle(Encoder *encoder);
 

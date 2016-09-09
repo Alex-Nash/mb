@@ -53,29 +53,17 @@ u16 Cos(u16 angle)
   }
 }
 
-void InitBram(u32 BramDeviceId)
-{
-  XBram_Config *ConfigPtr;
-  ConfigPtr=XBram_LookupConfig(BramDeviceId);
-
-  XBram_CfgInitialize(CosArray,ConfigPtr);
-}
-
 // переделать
-void SetCosArray (XBram_Config *ConfigPtr)
+void SetCosArray (void)
 {
   double Delta;
   u32 i;
-  //u32* ArrayPtr = COS_ARRAY_BASE_ADDRESS;
 
   Delta = 2.0 * M_PI / MAX_ANGLE_VALUE;
 
   for (i=0; i < MAX_ANGLE_VALUE; i++)
   {
-//    XBram_Out32((UINTPTR) ArrayPtr++, (u32) ((0xFFFFFFFF)/2 * (cos((i+0.5) * Delta) + 1)));
-    XBram_WriteReg((u32)COS_ARRAY_BASE_ADDRESS, (u32) i,(u32) ((0xFFFFFFFF)/2 * (cos((i+0.5) * Delta) + 1)));
-//    	XBram_Out32((UINTPTR) ArrayPtr++, (u32) 0xFFFFFFFF);
+    XBram_WriteReg((u32)COS_ARRAY_BASE_ADDRESS, (u32) i,(u32) ((0xFFFFFFFF)/2 * (cos(i * Delta) + 1)));
   }
-  //return --ArrayPtr;
 
 }

@@ -5,7 +5,7 @@
 #include "xparameters.h"
 #include "xbram.h"
 
-#define BRAM_DEVICE_ID		XPAR_BRAM_0_DEVICE_ID
+#define COS_ARRAY_BASE_ADDRESS		XPAR_BRAM_0_BASEADDR
 
 
 
@@ -38,7 +38,7 @@ u16 CPhaseCos(u16 angle);
 
 u16 Cos(u16 angle);
 
-void SetCosArray (XBram_Config *ConfigPtr);
+void SetCosArray (void);
 
 
 #endif

@@ -5,26 +5,24 @@
 #include "xstatus.h"
 #include "xtmrctr_l.h"
 
-#define PWM_PERIOD  0
-#define PWM_DUTY    1
+#define PWM_PERIOD            0
+#define PWM_DUTY              1
+#define PWM_MAX_DUTY_VALUE    0xFFFF
 
 struct PwmGenerator
 {
-  struct Pwm *APhasePwm;
-  struct Pwm *BPhasePwm;
-  struct Pwm *CPhasePwm;
+  u32 APhasePwmBaseAddress;
+  u32 BPhasePwmBaseAddress;
+  u32 CPhasePwmBaseAddress;
 };
 
-struct Pwm
-{
-  u32 TmrCtrBaseAddress;
-};
 
 void SetPwmGenerator(struct PwmGenerator *pwmGen, u16 angle);
 
-void InitPwmGenerator(struct PwmGenerator *pwmGen);
+void InitPwmGenerator(struct PwmGenerator *pwmGen,
+    u32 tmr1BaseAddr, u32 tmr2BaseAddr, u32 tmr3BaseAddr);
 
-void StartPwm_Generator_Start(struct PwmGenerator *pwmGen);
+void StartPwmGenerator(struct PwmGenerator *pwmGen);
 
 void StopPwmGenerator(struct PwmGenerator *pwmGen);
 
