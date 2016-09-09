@@ -38,6 +38,6 @@ void InitEngine(struct Engine *engine, struct PwmGenerator *pwmGen,
     Encoder *encoder, u32 gpioBaseAddress)
 {
   engine->gpioBaseAddress = gpioBaseAddress;
-  engine->PwmGenerator = pwmGen;
+  engine->pwmGen = pwmGen;
   engine->encoder = encoder;
 }

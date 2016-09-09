@@ -1,6 +1,7 @@
 #ifndef __PWM_H
 #define __PWM_H
 
+#include "sincos.h"
 #include "xparameters.h"
 #include "xstatus.h"
 #include "xtmrctr_l.h"
