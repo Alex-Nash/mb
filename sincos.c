@@ -5,7 +5,7 @@ u16 GetOrtogonalAngleRight(u16 angle)
 {
   u16 newAngle;
   newAngle = GetReferenceAngle(angle);
-  return GetReferenceAngle((newAngle + ANGLE_90));
+  return (u16)GetReferenceAngle((newAngle + ANGLE_90));
 }
 
 u16 GetOrtogonalAngleLeft(u16 angle)
@@ -14,7 +14,7 @@ u16 GetOrtogonalAngleLeft(u16 angle)
   newAngle = GetReferenceAngle(angle);
   if(newAngle >= ANGLE_90)
     return (u16)(newAngle - ANGLE_90);
-  return (u16) MAX_ANGLE_VALUE + ANGLE_90 - NewAngle;
+  return (u16) (MAX_ANGLE_VALUE + ANGLE_90 - newAngle);
 }
 
 u16 GetReferenceAngle(u16 angle)
@@ -50,7 +50,7 @@ u16 Cos(u16 angle)
   // read cos value from cos array
   CosValue = (u32) XBram_ReadReg(COS_ARRAY_BASE_ADDRESS, tmpAngleValue);
   return (u16)(CosValue >> 16);
-  }
+
 }
 
 // переделать

@@ -80,7 +80,7 @@ u16 ResetEncoder (Encoder *encoder)
  * Returns pointer to the SPI instance
  * if error returns NULL
  *******************************************/
-Encoder* InitEncoder(Encoder *encoder, u32 SpiDeviceID)
+Encoder * InitEncoder(Encoder *encoder, u32 SpiDeviceID)
 {
   XSpi_Config *ConfigPtr;	// Pointer to Configuration data
 

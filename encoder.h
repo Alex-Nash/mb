@@ -3,6 +3,8 @@
 
 #include "sincos.h"
 #include "usleep-microblaze.h"
+#include "xspi.h"
+#include "xspi_l.h"
 
 #define ENCODER_COMMAND_NOP         0x00
 #define ENCODER_COMMAND_RD_POS		  0x10
@@ -20,6 +22,6 @@ u16 GetMechanicalAngle(Encoder *encoder);
 
 u16 ResetEncoder (Encoder *encoder);
 
-Encoder* InitEncoder(Encoder *encoder);
+Encoder* InitEncoder(Encoder *encoder, u32 SpiDeviceID);
 
 #endif

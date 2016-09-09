@@ -1,6 +1,3 @@
-#ifndef __PHASETRANSFORMATION_H
-#define __PHASETRANSFORMATION_H
-
 
 #include "platform.h"
 #include "xil_printf.h"
@@ -50,16 +47,13 @@ struct InvParcOutput_Type {
 };
 
 
-void ClarkeTransformation (	struct ClarkInput_Type *in_TreePhase,
-														struct ClarkOutput_Type *out_StatOrthogonal);
+void ClarkeTransformation (struct ClarkInput_Type *in_TreePhase, struct ClarkOutput_Type *out_StatOrthogonal);
 
-void InverseClarkeTransformation (struct InvClarkInput_Type *in_StatOrthogonal, 
-																	struct InvClarkOutput_Type *out_TreePhase);
 
-void ParcTransformation (	struct ParcInput_Type *in_Stationar,
-													struct ParcOutput_Type *out_Rotate);
+void InverseClarkeTransformation(struct InvClarkInput_Type *in_StatOrthogonal, struct InvClarkOutput_Type *out_TreePhase);
 
-void InverseParcTransformation (struct InvParcInput_Type *in_Rotate,
-																struct InvParcOutput_Type *out_Stationar);
 
-#endif
+void ParcTransformation (struct ParcInput_Type *in_Stationar, struct ParcOutput_Type *out_Rotate);
+
+
+void InverseParcTransformation (struct InvParcInput_Type *in_Rotate, struct InvParcOutput_Type *out_Stationar);

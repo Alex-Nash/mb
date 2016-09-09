@@ -1,42 +1,43 @@
 #include "engine.h"
 
-
-void StartForward (struct Engine *engine, u16 power, u16 loop)
-{
-  u16 angle;
-  InitEngine(engine);
-  StartPwmGenerator(engine->pwmGen);
-  // поднимаем GPIO
-  SetGpioToHi(engine->gpioBaseAddress);
-  while (loop--) {
-    angle = GetOrtogonalAngleLeft(GetElectricalAngle(engine->encoder));
-    SetPwmGenerator(angle, power);
-  }
-  // опускаем GPIO
-  SetGpioToLow(engine->gpioBaseAddress);
-  StopPwmGenerator();
-
-}
 void StartBack (struct Engine *engine, u16 power, u16 loop)
 {
   u16 angle;
-  InitEngine(engine);
+  //InitEngine(engine);
   StartPwmGenerator(engine->pwmGen);
   // поднимаем GPIO
   SetGpioToHi(engine->gpioBaseAddress);
   while (loop--) {
     angle = GetOrtogonalAngleRight(GetElectricalAngle(engine->encoder));
-    SetPwmGenerator(angle, power);
+    SetPwmGenerator(engine->pwmGen, (u16)angle, (u16)power);
   }
   // опускаем GPIO
   SetGpioToLow(engine->gpioBaseAddress);
-  StopPwmGenerator();
+  StopPwmGenerator(engine->pwmGen);
 }
 
-void InitEngine(struct Engine *engine, struct PWM_Generator *pwmGen,
+
+void StartForward (struct Engine *engine, u16 power, u16 loop)
+{
+  u16 angle;
+  //InitEngine(engine);
+  StartPwmGenerator(engine->pwmGen);
+  // поднимаем GPIO
+  SetGpioToHi(engine->gpioBaseAddress);
+  while (loop--) {
+    angle = GetOrtogonalAngleLeft(GetElectricalAngle(engine->encoder));
+    SetPwmGenerator(engine->pwmGen, (u16)angle, (u16)power);
+  }
+  // опускаем GPIO
+  SetGpioToLow(engine->gpioBaseAddress);
+  StopPwmGenerator(engine->pwmGen);
+
+}
+
+void InitEngine(struct Engine *engine, struct PwmGenerator *pwmGen,
     u32 encoderDeviceID, u32 gpioBaseAddress)
 {
   InitEncoder(engine->encoder, encoderDeviceID);
-  InitPwmGenerator(engine->pwmGen);
+  //InitPwmGenerator(pwmGen);
   engine->gpioBaseAddress = gpioBaseAddress;
 }

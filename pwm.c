@@ -1,5 +1,5 @@
 // Set tree phase of PWM genegator
-
+#include "pwm.h"
 
 void SetPwmGenerator(struct PwmGenerator *pwmGen, u16 power, u16 angle)
 {
@@ -40,9 +40,9 @@ void StartPwmGenerator(struct PwmGenerator *pwmGen)
 
 void StopPwmGenerator(struct PwmGenerator *pwmGen)
 {
-  StopPwm(pwmGen->APhasePWMBaseAddress);
-  StopPwm(pwmGen->BPhasePWMBaseAddress);
-  StopPwm(pwmGen->CPhasePWMBaseAddress);
+  StopPwm(pwmGen->APhasePwmBaseAddress);
+  StopPwm(pwmGen->BPhasePwmBaseAddress);
+  StopPwm(pwmGen->CPhasePwmBaseAddress);
 }
 
 void InitPwm(u32 TmrCtrBaseAddress)
@@ -92,6 +92,7 @@ void InitPwm(u32 TmrCtrBaseAddress)
  */
 void StartPwm(u32 TmrCtrBaseAddress)
 {
+  u32 ControlStatus;
   ControlStatus = XTmrCtr_GetControlStatusReg(TmrCtrBaseAddress,
       PWM_PERIOD);
   XTmrCtr_SetControlStatusReg(TmrCtrBaseAddress, PWM_PERIOD,

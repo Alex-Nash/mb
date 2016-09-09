@@ -17,7 +17,7 @@ struct PwmGenerator
 };
 
 
-void SetPwmGenerator(struct PwmGenerator *pwmGen, u16 angle);
+void SetPwmGenerator(struct PwmGenerator *pwmGen, u16 power, u16 angle);
 
 void InitPwmGenerator(struct PwmGenerator *pwmGen,
     u32 tmr1BaseAddr, u32 tmr2BaseAddr, u32 tmr3BaseAddr);
@@ -26,12 +26,12 @@ void StartPwmGenerator(struct PwmGenerator *pwmGen);
 
 void StopPwmGenerator(struct PwmGenerator *pwmGen);
 
-void InitPwm(struct Pwm *pwm);
+void InitPwm(u32 TmrCtrBaseAddress);
 
-void StartPwm(struct Pwm *pwm);
+void StartPwm(u32 TmrCtrBaseAddress);
 
-void StopPwm(struct Pwm *pwm);
+void StopPwm(u32 TmrCtrBaseAddress);
 
-void SetPwmDS(struct PWM *pwm, u16 dutyCycle);
+void SetPwmDS(u32 TmrCtrBaseAddress, u16 dutyCycle);
 
 #endif

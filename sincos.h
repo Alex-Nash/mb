@@ -15,12 +15,12 @@
 #define MAX_ANGLE_VALUE 0x200     // 2*Pi, 360deg ... only 2^
 #define ANGLE_120       0xAA      // 2Pi/3
 #define ANGLE_240       0x154     // 4Pi/3
-#define ANGLE_90        MAX_ANGLE_VALUE >> 2
+#define ANGLE_90        (MAX_ANGLE_VALUE >> 2)
 
 
 
 
-static XBram CosArray;
+//static XBram CosArray;
 
 u16 GetOrtogonalAngleRight(u16 angle);
 

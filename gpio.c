@@ -1,5 +1,5 @@
 
-
+#include "gpio.h"
 
 void SetGpioToHi(u32 gpioBaseAddress)
 {
