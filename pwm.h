@@ -3,6 +3,7 @@
 
 #include "sincos.h"
 #include "xparameters.h"
+#include "encoder.h"
 #include "xstatus.h"
 #include "xtmrctr_l.h"
 
@@ -10,12 +11,18 @@
 #define PWM_DUTY              1
 #define PWM_MAX_DUTY_VALUE    0xFFFF
 
+
+#define less(x,y)  (x < y)              // функция сравнения элементов
+
+#define swap(x,y)  {int t=x; x=y; y=t;} // процедура перестановки элементов
+
 struct PwmGenerator
 {
   u32 APhasePwmBaseAddress;
   u32 BPhasePwmBaseAddress;
   u32 CPhasePwmBaseAddress;
 };
+
 
 
 void SetPwmGenerator(struct PwmGenerator *pwmGen, u16 power, u16 angle);

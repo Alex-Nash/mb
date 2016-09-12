@@ -20,15 +20,58 @@ void SetPwmGenerator(struct PwmGenerator *pwmGen, u16 power, u16 angle)
   SetPwmDS(pwmGen->CPhasePwmBaseAddress, (u16)(dutyCycleC >> 16));
 }
 
-void InitPwmGenerator(struct PwmGenerator *pwmGen,
-    u32 tmr1BaseAddr, u32 tmr2BaseAddr, u32 tmr3BaseAddr)
+void InitPwmGenerator(struct PwmGenerator *pwmGen, Encoder *encoder,
+    u32 *tmrArray)
 {
-  pwmGen->APhasePwmBaseAddress = tmr2BaseAddr;
-  pwmGen->BPhasePwmBaseAddress = tmr2BaseAddr;
-  pwmGen->CPhasePwmBaseAddress = tmr2BaseAddr;
+  u32 sortedTmrArray[3];
+
+  SortPwm(encoder, tmrArray, sortedTmrArray);
+
+  pwmGen->APhasePwmBaseAddress = sortedTmrArray[0];
+  pwmGen->BPhasePwmBaseAddress = sortedTmrArray[1];
+  pwmGen->CPhasePwmBaseAddress = sortedTmrArray[2];
+
   InitPwm(pwmGen->APhasePwmBaseAddress);
   InitPwm(pwmGen->BPhasePwmBaseAddress);
   InitPwm(pwmGen->CPhasePwmBaseAddress);
+}
+/*
+* Return sorted timer base address arrey
+* thear element[0] = A phase timer, element[1] = B phase timer
+* element[2] = C phase timer
+*/
+u32* SortPwm(Encoder *encoder, u32 *tmrArray, u32 *sortedTmrArray)
+{
+  u32 angle[3];
+  int i,j,k;
+  for (i = 0; i < 3; i++) {
+    InitPwm(tmrArray[i]);
+    StartPwm(tmrArray[i]);
+    SetPwmDS(tmrArray[i], (MAX_DS_VALUE >> 1));
+    usleep(100); // turn rotor waiting
+    angle[i] = GetElectricalAngle(encoder);
+    if (angle[i] == ENCODER_ERR)
+      return NULL;
+    StopPwm(tmrArray[i]);
+
+    // initial define sorded array
+    sortedTmrArray[i] = tmrArray[i];
+  }
+  // Selection sort
+  for (i=0; i<3; i++)
+  {
+    k=i;
+    for (j=i+1; j<3; j++)
+      if (less(angle[j], angle[k]))
+        k=j;
+    if (i!=k)
+    {
+      swap(angle[i], angle[k]);
+      swap(sortedTmrArray[i], sortedTmrArray[k]);
+    }
+  }
+
+  return sortedTmrArray;
 }
 
 void StartPwmGenerator(struct PwmGenerator *pwmGen)

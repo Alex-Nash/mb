@@ -10,6 +10,8 @@
 #define ENCODER_COMMAND_RD_POS		  0x10
 #define ENCODER_COMMAND_SET_ZERO    0x70
 
+#define MAX_DS_VALUE                0xFFFF
+
 #define ENCODER_ERR                 0xFFFF
 
 #define Encoder     XSpi
