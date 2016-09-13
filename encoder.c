@@ -9,7 +9,7 @@
 u16 GetElectricalAngle(struct Encoder *encoder)
 {
   u16 angle;
-  angle = GetMechanicalAngle(encoder->spi);
+  angle = GetMechanicalAngle(encoder);
   if (angle == ENCODER_ERR)
     return ENCODER_ERR;
   return GetReferenceAngle(angle);
@@ -80,7 +80,7 @@ u16 ResetEncoder (struct Encoder *encoder)
  * Returns pointer to the SPI instance
  * if error returns NULL
  *******************************************/
-Encoder * InitEncoder(struct Encoder *encoder, XSpi *spi,
+struct Encoder* InitEncoder(struct Encoder *encoder, XSpi *spi,
     u32 SpiDeviceID, u32 powerEnableGPIOBaseAddress)
 {
   // define Encoder properties

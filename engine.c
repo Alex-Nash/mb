@@ -1,24 +1,24 @@
 #include "engine.h"
 
-void StartExecuteCommand (struct Engine *engine, struct Command command)
+void StartExecuteCommand (struct Engine *engine, struct Command *command)
 {
   u16 angle;
 
   //InitEngine(engine);
 
   // endless cycle
-  while () {
+  while (1) {
     // read command from ram
     GetCommand(engine, command);
 
-    if (command->Direction == (u32)ENG_DIRECTION_FORWARD )
+    if (command->direction == (u32)ENG_DIRECTION_FORWARD )
       angle = GetOrtogonalAngleRight(GetElectricalAngle(engine->encoder));
     else
       angle = GetOrtogonalAngleLeft(GetElectricalAngle(engine->encoder));
 
 
-    if (command->Enable)
-      SetPwmGenerator(engine->pwmGen, (u16)angle, (u16)command->TORQ);
+    if (command->enable)
+      SetPwmGenerator(engine->pwmGen, (u16)angle, (u16)command->torq);
     else
       SetPwmGenerator(engine->pwmGen, (u16)angle, (u16)0x00);
   }
@@ -28,9 +28,9 @@ void StartExecuteCommand (struct Engine *engine, struct Command command)
 * Read command from ram and init struct Command
 * Return pointer to the struct Command
 */
-Command* GetCommand(struct Engine *engine, Command *command)
+struct Command* GetCommand(struct Engine *engine, struct Command *command)
 {
-  u32 dashBoardOfset
+  u32 dashBoardOfset;
   // find dashboard ofset for current engine
   if (engine->position == (u32)ENG_POSITION_LEFT)
     dashBoardOfset = (u32)MEM_ENG_LEFT;
@@ -40,19 +40,19 @@ Command* GetCommand(struct Engine *engine, Command *command)
   // while Mutex is lock , waiting
   while (command->mutex)
   {
-    Command->mutex = (u32) XBram_ReadReg(Command->dashBoardBaseAddress, (u32)MEM_MUTEX);
+    command->mutex = (u32) XBram_ReadReg(command->dashBoardBaseAddress, (u32)MEM_MUTEX);
   }
   // lock mutex
-  XBram_WriteReg(Command->dashBoardBaseAddress, (u32)MEM_MUTEX,(u32)MUTEX_LOCK);
+  XBram_WriteReg(command->dashBoardBaseAddress, (u32)MEM_MUTEX,(u32)MUTEX_LOCK);
   // Read command from RAM
-  command->enable     = (u32) XBram_ReadReg(Command->dashBoardBaseAddress,
+  command->enable     = (u32) XBram_ReadReg(command->dashBoardBaseAddress,
                             dashBoardOfset + (u32)MEM_ENG_EN);
-  command->direction  = (u32) XBram_ReadReg(Command->dashBoardBaseAddress,
+  command->direction  = (u32) XBram_ReadReg(command->dashBoardBaseAddress,
                             dashBoardOfset + (u32)MEM_ENG_DIR);
-  command->torq       = (u32) XBram_ReadReg(Command->dashBoardBaseAddress,
+  command->torq       = (u32) XBram_ReadReg(command->dashBoardBaseAddress,
                             dashBoardOfset + (u32)MEM_ENG_TORQ);
   //unlock mutex
-  XBram_WriteReg(Command->DashBoardBaseAddress, (u32)MEM_MUTEX,(u32)MUTEX_UNLOCK);
+  XBram_WriteReg(command->dashBoardBaseAddress, (u32)MEM_MUTEX,(u32)MUTEX_UNLOCK);
 
   return command;
 
@@ -70,7 +70,7 @@ void  InitCommand(struct Command *command, u32 dashBoardBaseAddress)
 }
 
 void InitEngine(struct Engine *engine, struct PwmGenerator *pwmGen,
-    struct Encoder *encoder, struct Command *command, u32 gpioBaseAddress, u32 position)
+    struct Encoder *encoder, u32 gpioBaseAddress, u32 position)
 {
   // define Engine properties
   engine->pwmGen          = pwmGen;
@@ -81,10 +81,10 @@ void InitEngine(struct Engine *engine, struct PwmGenerator *pwmGen,
   // start 3 pwm timer (tmr1,tmr2,tmr3)
   StartPwmGenerator(engine->pwmGen);
 
-  SetEncoderToZeroPosition(pwmGen, encoder);
+  SetEncoderToZeroPosition(engine->pwmGen, engine->encoder);
 }
 
-void SetEncoderToZeroPosition(struct PwmGenerator *pwmGen, struct Encoder encoder)
+void SetEncoderToZeroPosition(struct PwmGenerator *pwmGen, struct Encoder *encoder)
 {
   // turn torot to zero position
   SetPwmDS(pwmGen->APhasePwmBaseAddress, (u16)(MAX_DS_VALUE >> 1));

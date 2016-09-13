@@ -5,7 +5,6 @@
 #include "encoder.h"
 #include "sincos.h"
 #include "gpio.h"
-#include "command.h"
 #include "xbram.h"
 
 #define ENG_POSITION_LEFT         0x00
@@ -13,6 +12,12 @@
 
 #define ENG_DIRECTION_BACK        0x00
 #define ENG_DIRECTION_FORWARD     0x01
+
+#define ENG_DISABLE     		  0x00
+#define ENG_ENABLE        		  0x01
+
+#define MUTEX_UNLOCK     		  0x00
+#define MUTEX_LOCK        		  0x01
 
 
 #define MEM_MUTEX       0x00
@@ -39,13 +44,13 @@ struct Command
   u32 torq;
 };
 
-void StartExecuteCommand (struct Engine *engine, struct Command command);
+void StartExecuteCommand (struct Engine *engine, struct Command *command);
 
 /*
 * Read command from ram and init struct Command
 * Return pointer to the struct Command
 */
-Command* GetCommand(struct Engine *engine, Command *command);
+struct Command* GetCommand(struct Engine *engine, struct Command *command);
 
 /*
 * Init struct Command
@@ -53,8 +58,8 @@ Command* GetCommand(struct Engine *engine, Command *command);
 void  InitCommand(struct Command *command, u32 dashBoardBaseAddress);
 
 void InitEngine(struct Engine *engine, struct PwmGenerator *pwmGen,
-    struct Encoder *encoder, struct Command *command, u32 gpioBaseAddress, u32 position);
+    struct Encoder *encoder, u32 gpioBaseAddress, u32 position);
 
-void SetEncoderToZeroPosition(struct PwmGenerator *pwmGen, struct Encoder encoder);
+void SetEncoderToZeroPosition(struct PwmGenerator *pwmGen, struct Encoder *encoder);
 
 #endif

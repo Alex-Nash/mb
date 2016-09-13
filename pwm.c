@@ -1,4 +1,4 @@
-// Set tree phase of PWM genegator
+// Set tree phase of PWM generator
 #include "pwm.h"
 
 void SetPwmGenerator(struct PwmGenerator *pwmGen, u16 power, u16 angle)
@@ -20,7 +20,7 @@ void SetPwmGenerator(struct PwmGenerator *pwmGen, u16 power, u16 angle)
   SetPwmDS(pwmGen->CPhasePwmBaseAddress, (u16)(dutyCycleC >> 16));
 }
 
-void InitPwmGenerator(struct PwmGenerator *pwmGen, Encoder *encoder,
+void InitPwmGenerator(struct PwmGenerator *pwmGen, struct Encoder *encoder,
     u32 *tmrArray)
 {
   u32 sortedTmrArray[3];
@@ -40,7 +40,7 @@ void InitPwmGenerator(struct PwmGenerator *pwmGen, Encoder *encoder,
 * where element[0] = A phase timer, element[1] = B phase timer
 * element[2] = C phase timer
 */
-u32* SortPwm(Encoder *encoder, u32 *tmrArray, u32 *sortedTmrArray)
+u32* SortPwm(struct Encoder *encoder, u32 *tmrArray, u32 *sortedTmrArray)
 {
   u32 angle[3];
   int i,j,k;
@@ -55,7 +55,7 @@ u32* SortPwm(Encoder *encoder, u32 *tmrArray, u32 *sortedTmrArray)
     SetPwmDS(tmrArray[i], (u16)(0x00));
     StopPwm(tmrArray[i]);
 
-    // initial define sorded array
+    // initial define sorted array
     sortedTmrArray[i] = tmrArray[i];
   }
   // Selection sort

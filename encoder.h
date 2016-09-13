@@ -14,7 +14,7 @@
 
 #define ENCODER_ERR                 0xFFFF
 
-#define Encoder     XSpi
+//#define Encoder     XSpi
 
 struct Encoder
 {
@@ -48,7 +48,7 @@ u16 ResetEncoder (struct Encoder *encoder);
  * Returns pointer to the SPI instance
  * if error returns NULL
  *******************************************/
-Encoder * InitEncoder(struct Encoder *encoder, XSpi *spi,
+struct Encoder* InitEncoder(struct Encoder *encoder, XSpi *spi,
     u32 SpiDeviceID, u32 powerEnableGPIOBaseAddress);
 
 #endif
