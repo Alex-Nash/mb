@@ -37,7 +37,7 @@ void InitPwmGenerator(struct PwmGenerator *pwmGen, Encoder *encoder,
 }
 /*
 * Return sorted timer base address arrey
-* thear element[0] = A phase timer, element[1] = B phase timer
+* where element[0] = A phase timer, element[1] = B phase timer
 * element[2] = C phase timer
 */
 u32* SortPwm(Encoder *encoder, u32 *tmrArray, u32 *sortedTmrArray)
@@ -47,11 +47,12 @@ u32* SortPwm(Encoder *encoder, u32 *tmrArray, u32 *sortedTmrArray)
   for (i = 0; i < 3; i++) {
     InitPwm(tmrArray[i]);
     StartPwm(tmrArray[i]);
-    SetPwmDS(tmrArray[i], (MAX_DS_VALUE >> 1));
+    SetPwmDS(tmrArray[i], (u16)(MAX_DS_VALUE >> 1));
     usleep(100); // turn rotor waiting
     angle[i] = GetElectricalAngle(encoder);
     if (angle[i] == ENCODER_ERR)
       return NULL;
+    SetPwmDS(tmrArray[i], (u16)(0x00));
     StopPwm(tmrArray[i]);
 
     // initial define sorded array

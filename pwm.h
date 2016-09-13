@@ -12,9 +12,9 @@
 #define PWM_MAX_DUTY_VALUE    0xFFFF
 
 
-#define less(x,y)  (x < y)              // функция сравнения элементов
+#define less(x,y)  (x < y)              // function comparison elements
 
-#define swap(x,y)  {int t=x; x=y; y=t;} // процедура перестановки элементов
+#define swap(x,y)  {int t=x; x=y; y=t;} // function swap elements
 
 struct PwmGenerator
 {
@@ -23,12 +23,17 @@ struct PwmGenerator
   u32 CPhasePwmBaseAddress;
 };
 
-
-
 void SetPwmGenerator(struct PwmGenerator *pwmGen, u16 power, u16 angle);
 
-void InitPwmGenerator(struct PwmGenerator *pwmGen,
-    u32 tmr1BaseAddr, u32 tmr2BaseAddr, u32 tmr3BaseAddr);
+void InitPwmGenerator(struct PwmGenerator *pwmGen, Encoder *encoder,
+    u32 *tmrArray);
+
+/*
+* Return sorted timer base address arrey
+* where element[0] = A phase timer, element[1] = B phase timer
+* element[2] = C phase timer
+*/
+u32* SortPwm(Encoder *encoder, u32 *tmrArray, u32 *sortedTmrArray);
 
 void StartPwmGenerator(struct PwmGenerator *pwmGen);
 
@@ -36,10 +41,20 @@ void StopPwmGenerator(struct PwmGenerator *pwmGen);
 
 void InitPwm(u32 TmrCtrBaseAddress);
 
+/*
+ * Start the timer counter
+ */
 void StartPwm(u32 TmrCtrBaseAddress);
 
+/*
+ * Stop the timer counter
+ */
 void StopPwm(u32 TmrCtrBaseAddress);
 
-void SetPwmDS(u32 TmrCtrBaseAddress, u16 dutyCycle);
+/*
+ * Set Load register timer 1 counter (duty cycle)
+ */
+void SetPwmDS(u32 TmrCtrBaseAddress, u16 dutyCycle );
+
 
 #endif

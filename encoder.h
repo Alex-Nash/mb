@@ -16,14 +16,39 @@
 
 #define Encoder     XSpi
 
-u16 GetElectricalAngle(Encoder *encoder);
+struct Encoder
+{
+  XSpi *spi;
+  u32 powerEnableGPIOBaseAddress;
+};
 
-u16 GetMechanicalAngle(Encoder *encoder);
+/**************************************
+ * Convert mechanical angle to electrical
+ * Returns current electrical angle 0x000..0x1FF
+ * Returns 0xFFFF in the case of error
+ ***************************************/
+u16 GetElectricalAngle(struct Encoder *encoder);
 
-u16 GetMechanicalAngle(Encoder *encoder);
+/**************************************
+ * Reads the AMT20 Encoder
+ * Returns current position 0x000..0xFFF
+ * Returns 0xFFFF in the case of error
+ ***************************************/
+u16 GetMechanicalAngle(struct Encoder *encoder);
 
-u16 ResetEncoder (Encoder *encoder);
+/**************************************
+ * Reset AMT20 Encoder Position
+ * Returns 0
+ * Returns 0xFFFF in the case of error
+ ***************************************/
+u16 ResetEncoder (struct Encoder *encoder);
 
-Encoder* InitEncoder(Encoder *encoder, u32 SpiDeviceID);
+/******************************************
+ * Initialize SPI controller of the encoder
+ * Returns pointer to the SPI instance
+ * if error returns NULL
+ *******************************************/
+Encoder * InitEncoder(struct Encoder *encoder, XSpi *spi,
+    u32 SpiDeviceID, u32 powerEnableGPIOBaseAddress);
 
 #endif
