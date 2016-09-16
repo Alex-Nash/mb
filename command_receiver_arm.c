@@ -3,7 +3,7 @@
 */
 #define DEBUG
 
-#include "comand_receiver_arm.h"
+#include "command_receiver_arm.h"
 
 #define BACKLOG 0      // how many pending connections queue will hold
 
