@@ -1,46 +1,42 @@
-#include "command.h"
-
+#include "command_arm.h"
 
 /*
 * Write command to ram
+|           32 bit            |
+|  LEFT ENGINE | RIGHT ENGINE |
+|DIRECTION|TORQ|DIRECTION|TORQ|
+
 * Return
 */
-int SendCommand(Command *command)
+int SendCommand(struct Command *command)
 {
-  // while Mutex is lock , waiting ... then  lock mutex
-  while (mutex_trylock())  {  };
+  uint32_t mem_command[2];
+  uint32_t torq, dir;
+  int mem_cell = 0;
 
-  // Write command to RAM
-  struct bram_rw_data command_data;
-  command_data.size = 3;
+  mem_command[0] = 0;
+  mem_command[1] = 0;
+
   if (command->position == 'l')
-    command_data.offset = MEM_OFFSET_ENG_LEFT;
+  	mem_cell = 0;
   else
-    command_data.offset = MEM_OFFSET_ENG_RIGHT;
+	  mem_cell = 1;
 
-  unsigned int mem_command[3];
-  mem_command[0] = command->enable;
-  mem_command[1] = command->direction;
-  mem_command[2] = (unsigned int)(0xFFFF * command->torq/100.0);
-  command_data.data = mem_command;
-  if (ioctl(mem_file, AXI_BRAM_WRITE, &command_data))
-    return -1;
-  //Set wathDogTimer
-  setWathDogTimer();
-  //unlock mutex
-  mutex_unlock();
+  // define direction on command bite
+  dir = (((uint32_t)(command->direction))<<16) & ((uint32_t)0xFFFF0000);
+  // define torq on command bite
+  torq = ((uint32_t)(command->torq)) & ((uint32_t)0x0000FFFF);
+  // create 32 bit command
+  mem_command[mem_cell] = (uint32_t)(torq | dir);
 
+  if (BramMemoryWrite((uint32_t)MEM_OFFSET_COMMAND , mem_command, 2) < 0)
+    printf("Command: error sending command\n");
   return 0;
-
 }
 
-int CommandParser(Command *command, char *str)
+int ParseCommand(struct Command *command, char *str)
 {
-  unsigned int tmp_torq;
-
-  if (strlen(str)>6)
-  return -1;
-
+  uint16_t tmp_torq;
 
   if (str[0] == 'r' || str[0] == 'l')
     command->position = (char)str[0];
@@ -50,85 +46,22 @@ int CommandParser(Command *command, char *str)
   if (str[2] == '-' || str[2] == '+')
   {
     if (str[2] == '-')
-      command->direction = (unsigned int)ENG_DIRECTION_BACK);
+      command->direction = (uint16_t)(ENG_DIRECTION_REVERSE);
     else
-      command->direction = (unsigned int)ENG_DIRECTION_FORWARD);
-    }
+      command->direction = (uint16_t)(ENG_DIRECTION_FORWARD);
   }
   else
     return -1;
 
 
   char torq_buff[4];
-  memcpy(torq_buff, &str[3],(strlen(str)-2);
+  memcpy(torq_buff, &str[3], 4);
   tmp_torq = atoi(torq_buff);
   if (tmp_torq < 0 || tmp_torq > 100)
     return -1;
 
-  command->torq = (unsigned int)tmp_torq;
-  command->enable = (unsigned int)ENG_ENABLE;
+  command->torq = (uint16_t)(0xFFFF * tmp_torq/100.0);
+  command->enable = (uint16_t)ENG_ENABLE;
 
   return 0;
-}
-
-int SetWatchDogTimer()
-{
-  struct bram_rw_data rw_data;
-  rw_data.size = 1;
-  rw_data.offset = WD_TIMER_OFFSET;
-  rw_data.data = 0xFFFFFFFF;
-  if (ioctl(mem_file, AXI_BRAM_WRITE, &rw_data))
-    return -1;
-}
-
-int mutex_trylock()
-{
-  struct bram_rw_data rw_data;
-  rw_data.size = 1;
-  rw_data.offset = MEM_MUTEX;
-  rw_data.data = 1;
-  if (ioctl(mem_file, AXI_BRAM_READ, &rw_data))
-    return -1;
-  if (rw_data.data == 1)
-    return -1;
-
-  rw_data = 1;
-  if (ioctl(mem_file, AXI_BRAM_WRITE, &rw_data))
-    return -1;
-
-  return 1;
-}
-
-int mutex_unlock()
-{
-  struct bram_rw_data rw_data;
-  rw_data.size = 1;
-  rw_data.offset = MEM_MUTEX;
-  rw_data.data = 0;
-  if (ioctl(mem_file, AXI_BRAM_WRITE, &rw_data))
-    return -1;
-
-  return 1;
-}
-
-int SetCosArray (void)
-{
-  double Delta;
-  u32 i;
-
-  struct bram_rw_data rw_data;
-  rw_data.size = 1;
-  rw_data.offset = 0;
-  rw_data.data = 0;
-
-  Delta = 2.0 * M_PI / MAX_ANGLE_VALUE;
-
-  for (i=0; i < MAX_ANGLE_VALUE; i++)
-  {
-    rw_data.data = (unsigned int)((0xFFFFFFFF)/2 * (cos(i * Delta) + 1)));
-    if (ioctl(mem_file, AXI_BRAM_WRITE, &rw_data))
-      return -1;
-  }
-  return 0;
-
 }
