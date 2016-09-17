@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     port = atoi(argv[1]);
 
     if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-        DEBUG_PRINT("socket");
+        DEBUG_PRINT("socket1");
 		exit(1);
     }
 
